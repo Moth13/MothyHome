@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  bravia-app:
+    build: .
+    container_name: bravia-app
+    restart: unless-stopped
+    environment:
+      TV_IP: "${TV_IP}"
+      TV_PSK: "${TV_PSK}"
+      NETFLIX_URI: "com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity"
+      DISNEY_URI: "com.sony.dtv.com.disney.disneyplus.com.bamtechmedia.dominguez.main.MainActivity"
+      YOUTUBE_URI: "com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity"
+      DAZN_URI: "com.sony.dtv.com.dazn.com.dazn.MainActivity"
+      TV_URI: "com.sony.dtv.com.sony.dtv.tvx.com.sony.dtv.tvx.MainActivity"
+    ports:
+      - "8087:8080"
+    networks:
+      - bravia_net
+
+networks:
+  bravia_net:
+    driver: bridge
