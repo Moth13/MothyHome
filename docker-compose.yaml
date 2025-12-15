@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-  bravia-app:
+  home-client:
     build: .
-    container_name: bravia-app
+    container_name: home-client
     restart: unless-stopped
     environment:
       TV_IP: "${TV_IP}"
@@ -16,8 +16,8 @@ services:
     ports:
       - "8087:8080"
     networks:
-      - bravia_net
+      - home_client_net
 
 networks:
-  bravia_net:
+  home_client_net:
     driver: bridge

@@ -5,13 +5,13 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o bravia-app main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o home-client main.go
 
-FROM alpine:3.20
+FROM scratch AS runner
 
 WORKDIR /app
-COPY --from=builder /app/bravia-app /app/bravia-app
+COPY --from=builder /app/home-client /app/home-client
 
 EXPOSE 8080
 
-ENTRYPOINT ["/app/bravia-app"]
+ENTRYPOINT ["/app/home-client"]

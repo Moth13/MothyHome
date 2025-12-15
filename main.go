@@ -112,6 +112,6 @@ func main() {
 	})
 
 	addr := ":8080"
-	log.Printf("Bravia server started")
+	log.Printf("Home client server started")
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
