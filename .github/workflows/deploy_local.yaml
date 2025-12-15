@@ -1,0 +1,24 @@
+name: Deploy to Minikube (Raspberry Pi)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: dev_local
+    env:
+      NETFLIX_URI: ${{ vars.NETFLIX_URI }}
+      DISNEY_URI: ${{ vars.DISNEY_URI }}
+      YOUTUBE_URI: ${{ vars.YOUTUBE_URI }}
+      DAZN_URI: ${{ vars.DAZN_URI }}
+      TV_URI: ${{ vars.TV_URI }}
+      TV_IP: ${{ secrets.TV_IP }}
+      TV_PSK: ${{ secrets.TV_PSK }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Launch docker-compose
+        run: docker compose -f docker-compose.yaml up -d
