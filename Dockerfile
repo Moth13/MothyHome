@@ -5,7 +5,7 @@ COPY go.mod ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o home-client main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o home-client cmd/main.go
 
 FROM scratch AS runner
 
