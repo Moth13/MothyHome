@@ -1,0 +1,8 @@
+Readme.md
+.air.toml
+*.env
+Makefile
+.gitignore
+.github
+tmp
+docker-compose.yaml
