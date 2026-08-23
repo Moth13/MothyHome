@@ -35,6 +35,10 @@ func NewServer(tvIP string, tvPSK string, appURIs map[string]string) *Server {
 
 	http.HandleFunc("/app", server.sendAppRequest)
 	http.HandleFunc("/key/{id}", server.sendKeyRequest)
+	
+	// UI API endpoints
+	http.HandleFunc("/api/actions", server.getAvailableActions)
+	http.HandleFunc("/api/action/execute/", server.executeAction)
 
 	return server
 }

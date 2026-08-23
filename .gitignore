@@ -1,2 +1,4 @@
 *.env
 tmp
+# Templ generated files
+*.templ.go

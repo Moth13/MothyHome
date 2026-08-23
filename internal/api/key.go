@@ -21,7 +21,7 @@ type irccRequest struct {
 }
 
 func (server *Server) sendKeyRequest(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 		http.Error(w, "Unauthorized method", http.StatusMethodNotAllowed)
 		return
 	}
@@ -73,5 +73,5 @@ func (server *Server) sendKeyRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusOK)
 }

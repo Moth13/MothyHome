@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/moth13/home_client/internal/api"
+	"github.com/moth13/home_client/internal/web"
 )
 
 func main() {
@@ -24,6 +26,16 @@ func main() {
 	}
 
 	server := api.NewServer(tvIP, tvPSK, appURIs)
+	
+	// Setup web handlers
+	webHandler := web.NewWebHandler(server)
+	
+	// Web UI routes
+	http.HandleFunc("/", webHandler.Home)
+	http.HandleFunc("/static/", webHandler.ServeStatic)
+	
 	addr := ":8080"
-	server.Start(addr)
+	log.Printf("Home client server started on %s", addr)
+	log.Printf("Web UI available at http://localhost%s", addr)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }

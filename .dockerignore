@@ -4,5 +4,9 @@ Readme.md
 Makefile
 .gitignore
 .github
-tmp
+Dockerfile
 docker-compose.yaml
+tmp
+*.md
+.idea
+.vscode
