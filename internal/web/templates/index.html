@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #3b82f6;
+            --border: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header .subtitle { color: var(--text-secondary); font-size: 1rem; }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .tab-btn:hover { background-color: var(--bg-tertiary); }
+        .tab-btn.active { background-color: var(--accent); border-color: var(--accent); }
+        
+        .tab-content { display: none; min-height: 400px; }
+        .tab-content.active { display: block; }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.25rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            color: var(--text-primary);
+        }
+        
+        .action-btn:hover { background-color: var(--bg-tertiary); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .action-btn:active { transform: translateY(0); }
+        .action-btn[hx-request] { opacity: 0.6; cursor: wait; transform: none; }
+        .action-btn.app { border-left: 4px solid #ec4899; }
+        .action-btn.key { border-left: 4px solid var(--accent); }
+        .action-btn[data-action="netflix"] { border-left-color: #e50914; }
+        .action-btn[data-action="disney"] { border-left-color: #181e4d; }
+        .action-btn[data-action="youtube"] { border-left-color: #ff0000; }
+        .action-btn[data-action="dazn"] { border-left-color: #00d4ff; }
+        
+        .action-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .action-label { font-size: 0.75rem; font-weight: 500; text-align: center; color: var(--text-secondary); word-break: break-word; }
+        
+        .loading { text-align: center; padding: 1rem; color: var(--text-secondary); display: none; }
+        
+        footer { text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.875rem; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            header h1 { font-size: 1.75rem; }
+            .actions-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; }
+            .action-btn { padding: 1rem 0.5rem; }
+            .action-icon { font-size: 1.5rem; }
+            .action-label { font-size: 0.65rem; }
+        }
+        @media (max-width: 480px) {
+            .actions-grid { grid-template-columns: repeat(3, 1fr); }
+            .tabs { gap: 0.25rem; }
+            .tab-btn { padding: 0.5rem 1rem; font-size: 0.875rem; }
+        }
+    </style>
+</head>
+<body hx-boost="true">
+    <div class="container">
+        <header>
+            <h1>&#x2302; Home Client</h1>
+            <p class="subtitle">Contr&ocirc;le Sony Bravia - v{{.Version}}</p>
+        </header>
+        <main>
+            <div class="tabs" role="tablist">
+                <button class="tab-btn active" onclick="showTab('apps')" role="tab" aria-selected="true">Applications</button>
+                <button class="tab-btn" onclick="showTab('keys')" role="tab" aria-selected="false">Touches</button>
+            </div>
+            
+            <div id="apps" class="tab-content active">
+                <div class="actions-grid">
+                    {{range .Apps}}
+                    <button class="action-btn app" hx-post="/api/action/execute/app/{{.Name}}" hx-swap="none" data-action="{{.Name}}">
+                        <span class="action-icon">{{.Icon}}</span>
+                        <span class="action-label">{{.Display}}</span>
+                    </button>
+                    {{end}}
+                </div>
+            </div>
+            
+            <div id="keys" class="tab-content">
+                <div class="actions-grid">
+                    {{range .Keys}}
+                    <button class="action-btn key" hx-post="/api/action/execute/key/{{.Name}}" hx-swap="none" data-action="{{.Name}}">
+                        <span class="action-icon">{{.Icon}}</span>
+                        <span class="action-label">{{.Display}}</span>
+                    </button>
+                    {{end}}
+                </div>
+            </div>
+            
+            <div class="loading">Chargement...</div>
+        </main>
+        <footer>
+            <p>Contr&ocirc;le TV Sony Bravia</p>
+        </footer>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            event.target.classList.add('active');
+            event.target.setAttribute('aria-selected', 'true');
+        }
+    </script>
+</body>
+</html>

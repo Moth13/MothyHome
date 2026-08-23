@@ -6,3 +6,4 @@ type BraviaRequest struct {
 	Params  []any  `json:"params"`
 	Version string `json:"version"`
 }
+
